@@ -1,0 +1,8 @@
+\copy (SELECT form.name AS form_name, string_agg(field.name, ', ') AS metadata_field_name FROM ingest_form_data_object form INNER JOIN ingest_form_metadata_property_data_object formProperty ON form.id = formProperty.form_ingest_form_data_object_id INNER JOIN metadata_field field ON field.id = formProperty.property_id GROUP BY 1 ORDER BY form.name ASC) to /tmp/Metadata_Fields_Per_Form.csv with csv header
+
+\copy (SELECT grp.name AS group_name, string_agg(field.name, ', ') AS metadata_field_name FROM metadata_group grp INNER JOIN metadata_group_field groupField ON grp.id = groupField.metadata_group_id INNER JOIN metadata_field field ON groupField.metadata_field_id = field.id GROUP BY 1 ORDER BY grp.name ASC) to /tmp/Metadata_Field_Per_Metadata_Group.csv with csv header
+
+\copy (SELECT mg.name as group_name, string_agg(su.user_name, ', ') FROM security_user su INNER JOIN security_user_security_role susr ON su.id = susr.security_user_id INNER JOIN security_role_permission_context srpc ON srpc.security_role_id = susr.security_role_id INNER JOIN metadata_group mg ON mg.id = srpc.data_object_id GROUP BY 1) to /tmp/All_Group_Memebers_by_Metadat_Group.csv with csv header
+
+\copy (select ifdo.name as form_name, string_agg(su.user_name, ', ') as user_name from ingest_form_data_object ifdo inner join security_role_ingest_form_data_object srif on ifdo.id = srif.ingest_form_data_object_id inner join security_role sr on srif.security_role_id = sr.id inner join security_role_security_user srsu on srsu.security_role_id = sr.id inner join security_user su on su.id = srsu.security_user_id group by 1) to /tmp/Metadata_Form_Members.csv with csv header
+
