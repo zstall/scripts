@@ -18,18 +18,23 @@ def jiraRequest(ham):
 	response = requests.request("GET", url, headers=headers, data=payload)
 	flowAttemptIdRegex = re.compile(r'\'flowAttemptId\'\: \d\d\d\d')
 	flowAttemptId = flowAttemptIdRegex.search(response.text)
-	
+    
 	if flowAttemptId == 'None':
 		print(ham + " ticket not found")
 		return("null")
-	else:
-		idRegex = re.compile(r'\d\d\d\d')
+
+        
+	idRegex = re.compile(r'\d\d\d\d')
+	try:
 		id = idRegex.search(flowAttemptId.group())
+	except AttributeError:
+		print(ham +" does not have a flowAttemptId")
+		return("null")
 
 	return(id.group())
 
 
-# Need to do #
+# Need to do 
 
 # Connect to database
 
